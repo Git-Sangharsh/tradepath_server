@@ -4,9 +4,34 @@ import JournalEntry from "../models/JournalEntry.js";
 const router = express.Router();
 
 // POST /api/journal
-router.post("/", async (req, res) => {
+router.post("/journal", async (req, res) => {
   try {
-    const entry = new JournalEntry(req.body);
+    const {
+      date,
+      direction,
+      asset,
+      session,
+      result,
+      pnl,
+      comments,
+      confluences_used,
+      emotions,
+      user, // this comes from frontend or auth token
+    } = req.body;
+
+    const entry = new JournalEntry({
+      date,
+      direction,
+      asset,
+      session,
+      result,
+      pnl,
+      comments,
+      confluences_used,
+      emotions,
+      user,
+    });
+
     await entry.save();
     res.status(201).json(entry);
   } catch (err) {
@@ -15,7 +40,7 @@ router.post("/", async (req, res) => {
 });
 
 // GET /api/journal
-router.get("/", async (req, res) => {
+router.get("/get-journal", async (req, res) => {
   try {
     const entries = await JournalEntry.find().sort({ createdAt: -1 });
     res.json(entries);

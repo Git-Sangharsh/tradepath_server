@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import journalRoutes from "./routes/journal.js";
+import authRoutes from "./routes/Auth.js";
+
 
 dotenv.config();
 
@@ -13,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/journal", journalRoutes);
+app.use("/api/auth", authRoutes);
 
 mongoose
   .connect(
