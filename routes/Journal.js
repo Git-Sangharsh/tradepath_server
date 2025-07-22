@@ -1,10 +1,12 @@
 import express from "express";
 import JournalEntry from "../models/JournalEntry.js";
+import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
+
 // POST /api/journal
-router.post("/journal", async (req, res) => {
+router.post("/journal", authMiddleware, async (req, res) => {
   try {
     const {
       date,
@@ -16,7 +18,6 @@ router.post("/journal", async (req, res) => {
       comments,
       confluences_used,
       emotions,
-      user, // this comes from frontend or auth token
     } = req.body;
 
     const entry = new JournalEntry({
@@ -29,7 +30,7 @@ router.post("/journal", async (req, res) => {
       comments,
       confluences_used,
       emotions,
-      user,
+      user: req.userId, 
     });
 
     await entry.save();
@@ -40,9 +41,10 @@ router.post("/journal", async (req, res) => {
 });
 
 // GET /api/journal
-router.get("/get-journal", async (req, res) => {
+router.get("/get-journal", authMiddleware, async (req, res) => {
   try {
-    const entries = await JournalEntry.find().sort({ createdAt: -1 });
+    const userId = req.userId; // this comes from JWT in middleware
+    const entries = await JournalEntry.find({ user: userId }).sort({ createdAt: -1 });
     res.json(entries);
   } catch (err) {
     res.status(500).json({ error: err.message });
