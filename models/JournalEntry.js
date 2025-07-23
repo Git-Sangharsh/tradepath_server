@@ -14,6 +14,22 @@ const journalEntrySchema = new mongoose.Schema(
     asset: {
       type: String,
       required: true,
+      enum: [
+        "NASDAQ",
+        "S&P 500",
+        "BTC/USD",
+        "ETH/USD",
+        "XAU/USD", // Gold
+        "USOIL",
+        "US30",
+        "EUR/USD",
+        "GBP/USD",
+        "USD/JPY",
+        "USD/CHF",
+        "AUD/USD",
+        "NZD/USD",
+        "USD/CAD",
+      ],
     },
     session: {
       type: String,
@@ -46,9 +62,9 @@ const journalEntrySchema = new mongoose.Schema(
       ],
       default: [],
     },
-    emotions: {
+    setups: {
       type: String,
-      enum: ["Fear", "Greed", "FOMO", "Calm"],
+      enum: ["A+", "A", "B", "C", "D"],
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },

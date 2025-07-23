@@ -17,7 +17,7 @@ router.post("/journal", authMiddleware, async (req, res) => {
       pnl,
       comments,
       confluences_used,
-      emotions,
+      setups,
     } = req.body;
 
     const entry = new JournalEntry({
@@ -29,8 +29,8 @@ router.post("/journal", authMiddleware, async (req, res) => {
       pnl,
       comments,
       confluences_used,
-      emotions,
-      user: req.userId, 
+      setups,
+      user: req.userId,
     });
 
     await entry.save();
