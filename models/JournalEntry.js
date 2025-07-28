@@ -65,6 +65,7 @@ const journalEntrySchema = new mongoose.Schema(
     setups: {
       type: String,
       enum: ["A+", "A", "B", "C", "D"],
+      default: "A+",
     },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
