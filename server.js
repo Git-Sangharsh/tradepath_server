@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import journalRoutes from "./routes/journal.js";
+import journalRoutes from "./routes/Journal.js";
 import authRoutes from "./routes/Auth.js";
 
 
