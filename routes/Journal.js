@@ -50,12 +50,14 @@ router.post("/journal", authMiddleware, async (req, res) => {
 router.get("/get-journal", authMiddleware, async (req, res) => {
   try {
     const userId = req.userId;
-    const entries = await JournalEntry.find({ user: userId }).sort({
-      createdAt: -1,
-    });
 
-    // Format data for analysis
-    const formattedEntries = entries.map((entry) => ({
+    // Fetch all entries to show in UI
+    const entries = await JournalEntry.find({ user: userId }).sort({ createdAt: -1 });
+
+    // Only send the 10 most recent entries for AI analysis
+    const recentEntries = entries.slice(0, 10); // Use first 10 after sorting
+
+    const formattedEntries = recentEntries.map((entry) => ({
       date: entry.date,
       session: entry.session,
       asset: entry.asset,
@@ -69,10 +71,10 @@ router.get("/get-journal", authMiddleware, async (req, res) => {
 
     // LLaMA Prompt
     const prompt = `
-You are a trading coach AI. A trader has shared their full trading journal with you in structured format.
+You are a trading coach AI. A trader has shared their recent trading journal with you in structured format.
 
 Your job:
-- Analyze their past performance
+- Analyze their past 10 trades
 - Spot patterns of success and failure
 - Identify which setups, confluences, or sessions are profitable
 - Highlight common mistakes
@@ -94,8 +96,8 @@ ${JSON.stringify(formattedEntries, null, 2)}
       response.choices[0]?.message?.content || "No analysis generated.";
 
     res.json({
-      entries,
-      analysis,
+      entries,    // all trades for display
+      analysis,   // analysis from only 10 recent trades
     });
   } catch (err) {
     console.error("Error during journal fetch or AI analysis:", err.message);
