@@ -52,7 +52,9 @@ router.get("/get-journal", authMiddleware, async (req, res) => {
     const userId = req.userId;
 
     // Fetch all entries to show in UI
-    const entries = await JournalEntry.find({ user: userId }).sort({ createdAt: -1 });
+    const entries = await JournalEntry.find({ user: userId }).sort({
+      createdAt: -1,
+    });
 
     // Only send the 10 most recent entries for AI analysis
     const recentEntries = entries.slice(0, 10); // Use first 10 after sorting
@@ -96,8 +98,8 @@ ${JSON.stringify(formattedEntries, null, 2)}
       response.choices[0]?.message?.content || "No analysis generated.";
 
     res.json({
-      entries,    // all trades for display
-      analysis,   // analysis from only 10 recent trades
+      entries, // all trades for display
+      analysis, // analysis from only 10 recent trades
     });
   } catch (err) {
     console.error("Error during journal fetch or AI analysis:", err.message);
