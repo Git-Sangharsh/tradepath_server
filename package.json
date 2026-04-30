@@ -1,8 +1,7 @@
 {
   "name": "tradepath_server",
   "version": "1.0.0",
-  "main": "index.js",
-  "type": "module",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -19,6 +18,7 @@
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "express-rate-limit": "^8.4.1",
+    "google-auth-library": "^10.6.2",
     "groq-sdk": "^0.27.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.4",

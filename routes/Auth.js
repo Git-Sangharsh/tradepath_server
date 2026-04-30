@@ -1,8 +1,11 @@
 import express from "express";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
 
 const router = express.Router();
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
 
 // Signup
 router.post("/signup", async (req, res) => {
@@ -31,6 +34,7 @@ router.post("/signup", async (req, res) => {
 });
 
 // Login
+
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -58,4 +62,35 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/google", async (req, res) => {
+  const { credential } = req.body;
+
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const { email, name, picture } = ticket.getPayload();
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullName: name,
+        email,
+        picture,
+        authProvider: "google",
+      });
+    }
+
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+
+    res.status(200).json({ message: "Login successful", token });
+  } catch (err) {
+    res.status(500).json({ message: "Google login failed", error: err.message });
+  }
+});
 export default router;
