@@ -4,13 +4,21 @@ import cors from "cors";
 import dotenv from "dotenv";
 import journalRoutes from "./routes/Journal.js";
 import authRoutes from "./routes/Auth.js";
-
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// rate limiter
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 100, // 100 req per ip
+  message: "too many reqests, please try again letter."
+});
+
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
 
